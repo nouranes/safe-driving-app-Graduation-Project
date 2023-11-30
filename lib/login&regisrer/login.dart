@@ -1,9 +1,6 @@
-import 'package:final_project/login&regisrer/register.dart';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:final_project/login&regisrer/register.dart';
+import 'package:flutter/material.dart';
 
 import '../widgets/text_form_filed.dart';
 
@@ -17,6 +14,7 @@ class Login_screen extends StatelessWidget {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Color(0xFF083663),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -54,13 +52,14 @@ class Login_screen extends StatelessWidget {
                   FadeInRight(
                     delay: const Duration(milliseconds: 200),
                     child: Custom_Form_Field(
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'please enter your user name ';
-                          }
-                        },
-                        controller: usernameController,
-                        hint: 'enter your name'),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'please enter your user name ';
+                        }
+                      },
+                      controller: usernameController,
+                      hint: 'enter your name',
+                    ),
                   ),
                   const SizedBox(
                     height: 30,
@@ -81,7 +80,6 @@ class Login_screen extends StatelessWidget {
                         if (value == null || value.trim().isEmpty) {
                           return 'please enter your password';
                         }
-                        return null;
                       },
                       controller: passwordController,
                       hint: 'enter your password',
@@ -89,6 +87,7 @@ class Login_screen extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
+                      onTap: () {},
                       child: FadeInRight(
                           delay: const Duration(milliseconds: 350),
                           child: Text(
@@ -103,10 +102,7 @@ class Login_screen extends StatelessWidget {
                     delay: const Duration(milliseconds: 400),
                     child: MaterialButton(
                       onPressed: () {
-                        if (formkey.currentState?.validate() ?? false) {
-                          Navigator.pushNamed(
-                              context, Register_Screen.routeName);
-                        }
+                        //if (formkey.currentState?.validate() ?? false) {
                       },
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Container(
@@ -114,14 +110,19 @@ class Login_screen extends StatelessWidget {
                         height: 60,
                         width: mediaQuery.width,
                         decoration: BoxDecoration(
+                          //color: Colors.white,
+
                           border: Border.all(
-                            color: Color(0xFF083663),
+                            color: Colors.white,
                           ),
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Text(
                           "Login",
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
                         ),
                       ),
                     ),
@@ -130,6 +131,9 @@ class Login_screen extends StatelessWidget {
                     height: 20,
                   ),
                   InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, Register_Screen.routeName);
+                      },
                       child: FadeInRight(
                           delay: const Duration(milliseconds: 450),
                           child: Text(

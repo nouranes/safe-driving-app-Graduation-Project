@@ -15,32 +15,32 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        iconTheme: IconThemeData(color: Color(0xFF083663)),
+        iconTheme: IconThemeData(color: Colors.white),
         textTheme: TextTheme(
           titleLarge: GoogleFonts.poppins(
             fontSize: 24,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF083663),
+            color: Colors.white,
           ),
           titleMedium: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF083663),
+            color: Colors.white,
           ),
           bodyLarge: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w500,
-            color: Color(0xFF083663),
+            color: Colors.white,
           ),
           bodyMedium: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w400,
-            color: Color(0xFF083663),
+            color: Colors.white,
           ),
           bodySmall: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w300,
-            color: Color(0xFF083663),
+            color: Colors.white,
           ),
         ),
       ),

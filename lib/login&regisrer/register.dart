@@ -1,8 +1,6 @@
-import 'package:final_project/widgets/text_form_filed.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:final_project/widgets/text_form_filed.dart';
+import 'package:flutter/material.dart';
 
 class Register_Screen extends StatelessWidget {
   static const String routeName = 'register';
@@ -17,6 +15,12 @@ class Register_Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+        backgroundColor: Color(0xFF083663),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          toolbarHeight: 35,
+        ),
         body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Center(
@@ -27,16 +31,17 @@ class Register_Screen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
+                              //-------------------------------------------
                               FadeInRight(
                                   delay: const Duration(milliseconds: 50),
                                   child: Text(
                                     'Full Name',
                                     style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                                    Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
-                                height: 20,
+                                height: 2,
                               ),
 
                               FadeInRight(
@@ -51,9 +56,10 @@ class Register_Screen extends StatelessWidget {
                                     controller: fullnameController,
                                     hint: 'enter your name'),
                               ),
+                              //--------------------------------------
 
                               const SizedBox(
-                                height: 30,
+                                height: 20,
                               ),
 
                               FadeInRight(
@@ -61,11 +67,11 @@ class Register_Screen extends StatelessWidget {
                                   child: Text(
                                     'Mobile Number',
                                     style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                                    Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
-                                height: 20,
+                                height: 2,
                               ),
 
                               FadeInRight(
@@ -91,11 +97,11 @@ class Register_Screen extends StatelessWidget {
                                   child: Text(
                                     'Email',
                                     style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                                    Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
-                                height: 20,
+                                height: 2,
                               ),
 
                               FadeInRight(
@@ -120,11 +126,11 @@ class Register_Screen extends StatelessWidget {
                                   child: Text(
                                     'Password',
                                     style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                                    Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
-                                height: 20,
+                                height: 2,
                               ),
 
                               FadeInRight(
@@ -136,6 +142,16 @@ class Register_Screen extends StatelessWidget {
                                           value.trim().isEmpty) {
                                         return 'please enter the Password ';
                                       }
+                                      RegExp regex = RegExp(
+                                          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$');
+
+                                      // Test the password against the regex
+                                      if (!regex.hasMatch(value)) {
+                                        return 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.';
+                                      }
+
+                                      // Password is valid
+                                      return null;
                                     },
                                     controller: fullnameController,
                                     hint: 'enter your password'),
@@ -150,11 +166,11 @@ class Register_Screen extends StatelessWidget {
                                   child: Text(
                                     'Confirm Password',
                                     style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                                    Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
-                                height: 20,
+                                height: 2,
                               ),
 
                               FadeInRight(
@@ -173,13 +189,7 @@ class Register_Screen extends StatelessWidget {
                               FadeInRight(
                                 delay: const Duration(milliseconds: 450),
                                 child: MaterialButton(
-                                  onPressed: () {
-                                    if (formkey.currentState?.validate() ??
-                                        false) {
-                                      Navigator.pushNamed(
-                                          context, Register_Screen.routeName);
-                                    }
-                                  },
+                                  onPressed: () {},
                                   padding: EdgeInsets.symmetric(vertical: 16.0),
                                   child: Container(
                                     alignment: Alignment.center,
@@ -187,14 +197,13 @@ class Register_Screen extends StatelessWidget {
                                     width: mediaQuery.width,
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Color(0xFF083663),
-                                      ),
+                                          color: Colors.white),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     child: Text(
                                       "Create Account",
                                       style:
-                                          Theme.of(context).textTheme.bodyLarge,
+                                      Theme.of(context).textTheme.bodyLarge,
                                     ),
                                   ),
                                 ),

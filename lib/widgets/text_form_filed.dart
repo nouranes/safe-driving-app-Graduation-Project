@@ -17,24 +17,31 @@ class Custom_Form_Field extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: secureText,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(color: Color(0xFF083663)),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Color(0xFF083663)),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5.0),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        obscureText: secureText,
+        decoration: InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          hintText: hint,
+          hintStyle: TextStyle(
+              color: Colors.grey.shade500,
+              fontSize: 15,
+              fontWeight: FontWeight.w400),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.white)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Colors.white),
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Color(0xFF083663)),
-        ),
+        style: TextStyle(color: Color(0xFF083663)),
+        validator: validator,
       ),
-      style: TextStyle(color: Color(0xFF083663)),
-      validator: validator,
     );
   }
 }
