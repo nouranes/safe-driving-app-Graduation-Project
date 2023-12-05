@@ -1,14 +1,32 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:final_project/widgets/dialog_utilies.dart';
 import 'package:final_project/widgets/text_form_filed.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Register_Screen extends StatelessWidget {
+class Register_Screen extends StatefulWidget {
   static const String routeName = 'register';
-  TextEditingController fullnameController = TextEditingController();
-  TextEditingController mobileController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirm_passwordController = TextEditingController();
+
+  @override
+  State<Register_Screen> createState() => _Register_ScreenState();
+}
+
+class _Register_ScreenState extends State<Register_Screen> {
+  TextEditingController fullnameController =
+      TextEditingController(text: "nouran");
+
+  TextEditingController mobileController =
+      TextEditingController(text: "01027532464");
+
+  TextEditingController emailController =
+      TextEditingController(text: "nouran11@gmail.com");
+
+  TextEditingController passwordController =
+      TextEditingController(text: "nouran12@N");
+
+  TextEditingController confirm_passwordController =
+      TextEditingController(text: "nouran12@N");
+
   var formkey = GlobalKey<FormState>();
 
   @override
@@ -112,8 +130,16 @@ class Register_Screen extends StatelessWidget {
                                           value.trim().isEmpty) {
                                         return 'please enter the Email ';
                                       }
+                                      RegExp emailRegex = RegExp(
+                                        r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+                                      );
+
+                                      if (!emailRegex.hasMatch(value)) {
+                                        return 'Please enter a valid email address';
+                                      }
+                                      return null;
                                     },
-                                    controller: fullnameController,
+                                    controller: emailController,
                                     hint: 'enter your Email'),
                               ),
                               //--------------------------------
@@ -153,7 +179,7 @@ class Register_Screen extends StatelessWidget {
                                       // Password is valid
                                       return null;
                                     },
-                                    controller: fullnameController,
+                                    controller: passwordController,
                                     hint: 'enter your password'),
                               ),
                               //----------------------------------
@@ -182,32 +208,95 @@ class Register_Screen extends StatelessWidget {
                                           value.trim().isEmpty) {
                                         return 'please Cofirm your password ';
                                       }
+                                      if (value != passwordController.text) {
+                                        return 'Passwords do not match';
+                                      }
+                                      return null;
                                     },
-                                    controller: fullnameController,
+                                    controller: confirm_passwordController,
                                     hint: 'Confirm your password'),
                               ),
                               FadeInRight(
                                 delay: const Duration(milliseconds: 450),
                                 child: MaterialButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    if (formkey.currentState?.validate() ??
+                                        false) {}
+
+                                    register();
+                                  },
                                   padding: EdgeInsets.symmetric(vertical: 16.0),
                                   child: Container(
                                     alignment: Alignment.center,
                                     height: 60,
                                     width: mediaQuery.width,
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.white),
+                                      border: Border.all(color: Colors.white),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     child: Text(
                                       "Create Account",
                                       style:
-                                      Theme.of(context).textTheme.bodyLarge,
+                                          Theme.of(context).textTheme.bodyLarge,
                                     ),
                                   ),
                                 ),
                               ),
                             ]))))));
+  }
+
+  register() async {
+    DialogUtiles.showLoading(context, 'Loading...');
+    try {
+      final credintial =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      //need to hide loading
+      DialogUtiles.hideLoading(context);
+
+      //need to show message
+      DialogUtiles.showMessage(context,
+          message: 'Register Successfully',
+          title: 'sucess',
+          posActionName: 'ok');
+      print('register successifully ');
+      print(credintial.user?.uid ?? '');
+    } on FirebaseAuthException catch (e) {
+      //if make an error
+
+      if (e.code == 'weak-password') {
+        //need to hide loading
+        DialogUtiles.hideLoading(context);
+
+        //need to show message
+        DialogUtiles.showMessage(context,
+            message: 'The password provided is too weak.',
+            title: 'Error',
+            posActionName: 'ok');
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        //need to hide loading
+        DialogUtiles.hideLoading(context);
+
+        //need to show message
+        DialogUtiles.showMessage(context,
+            message: 'The account already exists for that email.',
+            title: 'Error',
+            posActionName: 'ok');
+
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      //need to hide loading
+      DialogUtiles.hideLoading(context);
+
+      //need to show message
+      DialogUtiles.showMessage(context,
+          message: " ${e.toString()}", title: 'Error', posActionName: 'ok');
+
+      print(e);
+    }
   }
 }

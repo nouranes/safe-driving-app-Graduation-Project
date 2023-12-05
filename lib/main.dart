@@ -1,10 +1,21 @@
+import 'package:final_project/_pages/home_screen.dart';
+import 'package:final_project/_pages/home_view.dart';
+import 'package:final_project/_pages/profile_view.dart';
 import 'package:final_project/login&regisrer/login.dart';
 import 'package:final_project/login&regisrer/register.dart';
 import 'package:final_project/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -16,6 +27,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         iconTheme: IconThemeData(color: Colors.white),
+        //-------------------------------------
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            selectedIconTheme: IconThemeData(
+              size: 32,
+              color: Color(0xFF083663),
+            ),
+            selectedItemColor: Theme.of(context).primaryColor,
+            unselectedItemColor: Colors.grey,
+            unselectedIconTheme: IconThemeData(size: 26, color: Colors.grey)),
+        //------------------------------------------------
         textTheme: TextTheme(
           titleLarge: GoogleFonts.poppins(
             fontSize: 24,
@@ -49,6 +70,9 @@ class MyApp extends StatelessWidget {
         Splash_Screen.routeName: (context) => Splash_Screen(),
         Login_screen.routeName: (context) => Login_screen(),
         Register_Screen.routeName: (context) => Register_Screen(),
+        Home_Screen.routeName: (context) => Home_Screen(),
+        Home_View.routeName: (context) => Home_View(),
+        Profile_View.routeName: (context) => Profile_View(),
       },
     );
   }

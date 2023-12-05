@@ -1,13 +1,26 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:final_project/_pages/home_screen.dart';
 import 'package:final_project/login&regisrer/register.dart';
+import 'package:final_project/widgets/dialog_utilies.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/text_form_filed.dart';
 
-class Login_screen extends StatelessWidget {
+class Login_screen extends StatefulWidget {
   static const String routeName = 'login';
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+
+  @override
+  State<Login_screen> createState() => _Login_screenState();
+}
+
+class _Login_screenState extends State<Login_screen> {
+  TextEditingController emailController =
+      TextEditingController(text: "nouran11@gmail.com");
+
+  TextEditingController passwordController =
+      TextEditingController(text: "nouran12@N");
+
   var formkey = GlobalKey<FormState>();
 
   @override
@@ -43,7 +56,7 @@ class Login_screen extends StatelessWidget {
                   FadeInRight(
                       delay: const Duration(milliseconds: 150),
                       child: Text(
-                        'User Name',
+                        'E-mail',
                         style: Theme.of(context).textTheme.bodyLarge,
                       )),
                   const SizedBox(
@@ -54,11 +67,11 @@ class Login_screen extends StatelessWidget {
                     child: Custom_Form_Field(
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'please enter your user name ';
+                          return 'please enter your E-mail';
                         }
                       },
-                      controller: usernameController,
-                      hint: 'enter your name',
+                      controller: emailController,
+                      hint: 'enter your e-mail',
                     ),
                   ),
                   const SizedBox(
@@ -102,7 +115,8 @@ class Login_screen extends StatelessWidget {
                     delay: const Duration(milliseconds: 400),
                     child: MaterialButton(
                       onPressed: () {
-                        //if (formkey.currentState?.validate() ?? false) {
+                        if (formkey.currentState?.validate() ?? false) {}
+                        login();
                       },
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Container(
@@ -148,5 +162,48 @@ class Login_screen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  login() async {
+    DialogUtiles.showLoading(context, 'Loading...');
+
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      // Login successful, add navigation or other actions here
+
+      // Example: Navigate to the next screen
+      DialogUtiles.showMessage(context, message: "Login Successfully");
+      Navigator.pushReplacementNamed(context, Home_Screen.routeName);
+    } on FirebaseAuthException catch (e) {
+      DialogUtiles.hideLoading(context);
+      DialogUtiles.showMessage(
+        context,
+        message: 'Error in E-mail or password ,check them again',
+        title: 'Error',
+        posActionName: 'ok',
+      );
+
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        DialogUtiles.showMessage(
+          context,
+          message: 'Wrong password provided for that user.',
+          title: 'Error',
+          posActionName: 'ok',
+        );
+        print('Wrong password provided for that user.');
+      } else {
+        // Handle other FirebaseAuthExceptions
+        print(e.toString());
+      }
+    } catch (e) {
+      DialogUtiles.hideLoading(context);
+      print(e.toString());
+    }
   }
 }
