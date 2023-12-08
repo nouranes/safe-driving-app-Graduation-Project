@@ -1,6 +1,9 @@
+import 'package:final_project/_pages/camera.dart';
 import 'package:final_project/_pages/home_screen.dart';
 import 'package:final_project/_pages/home_view.dart';
+import 'package:final_project/_pages/nearest_places(map).dart';
 import 'package:final_project/_pages/profile_view.dart';
+import 'package:final_project/_pages/setting_view.dart';
 import 'package:final_project/login&regisrer/login.dart';
 import 'package:final_project/login&regisrer/register.dart';
 import 'package:final_project/splash_screen.dart';
@@ -31,11 +34,11 @@ class MyApp extends StatelessWidget {
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
             selectedIconTheme: IconThemeData(
               size: 32,
-              color: Color(0xFF083663),
+              color: Colors.white,
             ),
-            selectedItemColor: Theme.of(context).primaryColor,
-            unselectedItemColor: Colors.grey,
-            unselectedIconTheme: IconThemeData(size: 26, color: Colors.grey)),
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white,
+            unselectedIconTheme: IconThemeData(size: 26, color: Colors.white)),
         //------------------------------------------------
         textTheme: TextTheme(
           titleLarge: GoogleFonts.poppins(
@@ -73,6 +76,9 @@ class MyApp extends StatelessWidget {
         Home_Screen.routeName: (context) => Home_Screen(),
         Home_View.routeName: (context) => Home_View(),
         Profile_View.routeName: (context) => Profile_View(),
+        Setting_View.routeName: (context) => Setting_View(),
+        MainScreen.routeName: (context) => MainScreen(),
+        Nearest_places.routeName: (context) => Nearest_places(),
       },
     );
   }

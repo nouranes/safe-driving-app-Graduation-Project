@@ -6,7 +6,7 @@ class Profile_View extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("home"),
-    );
+        body: Center(
+            child: Text("Profile", style: TextStyle(color: Colors.black))));
   }
 }

@@ -4,6 +4,7 @@ import 'package:final_project/login&regisrer/register.dart';
 import 'package:final_project/widgets/dialog_utilies.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/text_form_filed.dart';
 
@@ -24,6 +25,20 @@ class _Login_screenState extends State<Login_screen> {
   var formkey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  void checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    if (isLoggedIn) {
+      Navigator.pushReplacementNamed(context, Home_Screen.routeName);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
@@ -39,26 +54,29 @@ class _Login_screenState extends State<Login_screen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   FadeInRight(
-                      delay: const Duration(milliseconds: 50),
-                      child: Text(
-                        'Welcome',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      )),
+                    delay: const Duration(milliseconds: 50),
+                    child: Text(
+                      'Welcome',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
                   FadeInRight(
-                      delay: const Duration(milliseconds: 100),
-                      child: Text(
-                        'Please sign in with your mail',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      )),
+                    delay: const Duration(milliseconds: 100),
+                    child: Text(
+                      'Please sign in with your mail',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
                   const SizedBox(
                     height: 30,
                   ),
                   FadeInRight(
-                      delay: const Duration(milliseconds: 150),
-                      child: Text(
-                        'E-mail',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      )),
+                    delay: const Duration(milliseconds: 150),
+                    child: Text(
+                      'E-mail',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -78,11 +96,12 @@ class _Login_screenState extends State<Login_screen> {
                     height: 30,
                   ),
                   FadeInRight(
-                      delay: const Duration(milliseconds: 250),
-                      child: Text(
-                        'Password',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      )),
+                    delay: const Duration(milliseconds: 250),
+                    child: Text(
+                      'Password',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -100,14 +119,16 @@ class _Login_screenState extends State<Login_screen> {
                     ),
                   ),
                   GestureDetector(
-                      onTap: () {},
-                      child: FadeInRight(
-                          delay: const Duration(milliseconds: 350),
-                          child: Text(
-                            'Forget Password ?',
-                            style: Theme.of(context).textTheme.bodySmall,
-                            textAlign: TextAlign.end,
-                          ))),
+                    onTap: () {},
+                    child: FadeInRight(
+                      delay: const Duration(milliseconds: 350),
+                      child: Text(
+                        'Forget Password ?',
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 30,
                   ),
@@ -115,8 +136,9 @@ class _Login_screenState extends State<Login_screen> {
                     delay: const Duration(milliseconds: 400),
                     child: MaterialButton(
                       onPressed: () {
-                        if (formkey.currentState?.validate() ?? false) {}
-                        login();
+                        if (formkey.currentState?.validate() ?? false) {
+                          login();
+                        }
                       },
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Container(
@@ -124,8 +146,6 @@ class _Login_screenState extends State<Login_screen> {
                         height: 60,
                         width: mediaQuery.width,
                         decoration: BoxDecoration(
-                          //color: Colors.white,
-
                           border: Border.all(
                             color: Colors.white,
                           ),
@@ -145,16 +165,18 @@ class _Login_screenState extends State<Login_screen> {
                     height: 20,
                   ),
                   InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, Register_Screen.routeName);
-                      },
-                      child: FadeInRight(
-                          delay: const Duration(milliseconds: 450),
-                          child: Text(
-                            'Don’t have an account? Create Account',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            textAlign: TextAlign.center,
-                          ))),
+                    onTap: () {
+                      Navigator.pushNamed(context, Register_Screen.routeName);
+                    },
+                    child: FadeInRight(
+                      delay: const Duration(milliseconds: 450),
+                      child: Text(
+                        'Don’t have an account? Create Account',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -173,16 +195,16 @@ class _Login_screenState extends State<Login_screen> {
         password: passwordController.text,
       );
 
-      // Login successful, add navigation or other actions here
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isLoggedIn', true);
 
-      // Example: Navigate to the next screen
       DialogUtiles.showMessage(context, message: "Login Successfully");
       Navigator.pushReplacementNamed(context, Home_Screen.routeName);
     } on FirebaseAuthException catch (e) {
       DialogUtiles.hideLoading(context);
       DialogUtiles.showMessage(
         context,
-        message: 'Error in E-mail or password ,check them again',
+        message: 'Error in E-mail or password, check them again',
         title: 'Error',
         posActionName: 'ok',
       );
@@ -198,7 +220,6 @@ class _Login_screenState extends State<Login_screen> {
         );
         print('Wrong password provided for that user.');
       } else {
-        // Handle other FirebaseAuthExceptions
         print(e.toString());
       }
     } catch (e) {
