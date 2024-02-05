@@ -1,4 +1,6 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:final_project/_pages/user_model.dart';
+import 'package:final_project/login&regisrer/register_data.dart';
 import 'package:final_project/widgets/dialog_utilies.dart';
 import 'package:final_project/widgets/text_form_filed.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,19 +15,18 @@ class Register_Screen extends StatefulWidget {
 
 class _Register_ScreenState extends State<Register_Screen> {
   TextEditingController fullnameController =
-      TextEditingController(text: "nouran");
+      TextEditingController(text: 'nour');
 
   TextEditingController mobileController =
-      TextEditingController(text: "01027532464");
+      TextEditingController(text: '655421');
 
   TextEditingController emailController =
-      TextEditingController(text: "nouran11@gmail.com");
+      TextEditingController(text: 'nour@yahoo.com');
 
   TextEditingController passwordController =
-      TextEditingController(text: "nouran12@N");
+      TextEditingController(text: '123456@Aa');
 
-  TextEditingController confirm_passwordController =
-      TextEditingController(text: "nouran12@N");
+  TextEditingController confirm_passwordController = TextEditingController();
 
   var formkey = GlobalKey<FormState>();
 
@@ -33,8 +34,9 @@ class _Register_ScreenState extends State<Register_Screen> {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
-        backgroundColor: Color(0xFF083663),
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Colors.transparent,
           elevation: 0,
           toolbarHeight: 35,
@@ -55,7 +57,7 @@ class _Register_ScreenState extends State<Register_Screen> {
                                   child: Text(
                                     'Full Name',
                                     style:
-                                    Theme.of(context).textTheme.bodyLarge,
+                                        Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
@@ -85,7 +87,7 @@ class _Register_ScreenState extends State<Register_Screen> {
                                   child: Text(
                                     'Mobile Number',
                                     style:
-                                    Theme.of(context).textTheme.bodyLarge,
+                                        Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
@@ -115,7 +117,7 @@ class _Register_ScreenState extends State<Register_Screen> {
                                   child: Text(
                                     'Email',
                                     style:
-                                    Theme.of(context).textTheme.bodyLarge,
+                                        Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
@@ -152,7 +154,7 @@ class _Register_ScreenState extends State<Register_Screen> {
                                   child: Text(
                                     'Password',
                                     style:
-                                    Theme.of(context).textTheme.bodyLarge,
+                                        Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
@@ -192,7 +194,7 @@ class _Register_ScreenState extends State<Register_Screen> {
                                   child: Text(
                                     'Confirm Password',
                                     style:
-                                    Theme.of(context).textTheme.bodyLarge,
+                                        Theme.of(context).textTheme.bodyLarge,
                                   )),
 
                               const SizedBox(
@@ -223,7 +225,8 @@ class _Register_ScreenState extends State<Register_Screen> {
                                     if (formkey.currentState?.validate() ??
                                         false) {}
 
-                                    register();
+                                    register(fullnameController.text,
+                                        mobileController.text);
                                   },
                                   padding: EdgeInsets.symmetric(vertical: 16.0),
                                   child: Container(
@@ -231,13 +234,15 @@ class _Register_ScreenState extends State<Register_Screen> {
                                     height: 60,
                                     width: mediaQuery.width,
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
                                       "Create Account",
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
@@ -245,56 +250,84 @@ class _Register_ScreenState extends State<Register_Screen> {
                             ]))))));
   }
 
-  register() async {
+  register(String fullname, String number) async {
     DialogUtiles.showLoading(context, 'Loading...');
     try {
-      final credintial =
+      final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-      //need to hide loading
+
+      //save data
+      var user = MyUser(
+          id: credential.user?.uid ?? '',
+          fullName: fullname,
+          email: emailController.text,
+          number: number);
+      DataBaseUtiles.registerUser(user);
+
+      // Create a User object
+
+      print('Full Name: ${fullnameController.text}');
+      print('User Full Name: ${user?.fullName ?? ''}');
+
+      // Need to hide loading
       DialogUtiles.hideLoading(context);
 
-      //need to show message
-      DialogUtiles.showMessage(context,
-          message: 'Register Successfully',
-          title: 'sucess',
-          posActionName: 'ok');
-      print('register successifully ');
-      print(credintial.user?.uid ?? '');
+      // Need to show message
+      DialogUtiles.showMessage(
+        context,
+        message: 'Register Successfully',
+        title: 'Success',
+        posActionName: 'OK',
+      );
+
+      // Navigate to login screen with user details
+
+      print('register successfully ');
+      print(credential.user?.uid ?? '');
     } on FirebaseAuthException catch (e) {
-      //if make an error
+      // If an error occurs
 
       if (e.code == 'weak-password') {
-        //need to hide loading
+        // Need to hide loading
         DialogUtiles.hideLoading(context);
 
-        //need to show message
-        DialogUtiles.showMessage(context,
-            message: 'The password provided is too weak.',
-            title: 'Error',
-            posActionName: 'ok');
+        // Need to show message
+        DialogUtiles.showMessage(
+          context,
+          message: 'The password provided is too weak.',
+          title: 'Error',
+          posActionName: 'OK',
+        );
+
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        //need to hide loading
+        // Need to hide loading
         DialogUtiles.hideLoading(context);
 
-        //need to show message
-        DialogUtiles.showMessage(context,
-            message: 'The account already exists for that email.',
-            title: 'Error',
-            posActionName: 'ok');
+        // Need to show message
+        DialogUtiles.showMessage(
+          context,
+          message: 'The account already exists for that email.',
+          title: 'Error',
+          posActionName: 'OK',
+        );
 
         print('The account already exists for that email.');
       }
     } catch (e) {
-      //need to hide loading
+      // Need to hide loading
       DialogUtiles.hideLoading(context);
 
-      //need to show message
-      DialogUtiles.showMessage(context,
-          message: " ${e.toString()}", title: 'Error', posActionName: 'ok');
+      // Need to show message
+      DialogUtiles.showMessage(
+        context,
+        message: " ${e.toString()}",
+        title: 'Error',
+        posActionName: 'OK',
+      );
 
       print(e);
     }

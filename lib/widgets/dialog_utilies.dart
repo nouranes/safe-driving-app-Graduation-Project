@@ -24,8 +24,7 @@ class DialogUtiles {
     Navigator.pop(context);
   }
 
-  static void showMessage(
-    BuildContext context, {
+  static void showMessage(BuildContext context, {
     required String message,
     String title = 'Title',
     String? posActionName,

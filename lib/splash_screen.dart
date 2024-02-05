@@ -11,8 +11,13 @@ class Splash_Screen extends StatelessWidget {
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, Login_screen.routeName);
     });
-    return Scaffold(
-      body: Image.asset('assets/images/splashscreen.png'),
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/splashscreen.png'))),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+      ),
     );
   }
 }

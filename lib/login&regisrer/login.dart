@@ -1,9 +1,12 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:final_project/_pages/home_screen.dart';
+import 'package:final_project/_pages/user_provider.dart';
 import 'package:final_project/login&regisrer/register.dart';
+import 'package:final_project/login&regisrer/register_data.dart';
 import 'package:final_project/widgets/dialog_utilies.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/text_form_filed.dart';
@@ -12,17 +15,15 @@ class Login_screen extends StatefulWidget {
   static const String routeName = 'login';
 
   @override
-  State<Login_screen> createState() => _Login_screenState();
+  State<Login_screen> createState() => _LoginScreenState();
 }
 
-class _Login_screenState extends State<Login_screen> {
-  TextEditingController emailController =
-      TextEditingController(text: "nouran11@gmail.com");
+class _LoginScreenState extends State<Login_screen> {
+  TextEditingController emailController = TextEditingController();
 
-  TextEditingController passwordController =
-      TextEditingController(text: "nouran12@N");
+  TextEditingController passwordController = TextEditingController();
 
-  var formkey = GlobalKey<FormState>();
+  var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -42,13 +43,13 @@ class _Login_screenState extends State<Login_screen> {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xFF083663),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: formkey,
+              key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -119,12 +120,15 @@ class _Login_screenState extends State<Login_screen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () async {
+                      sendPasswordResetEmail();
+                    },
                     child: FadeInRight(
                       delay: const Duration(milliseconds: 350),
                       child: Text(
                         'Forget Password ?',
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.end,
                       ),
                     ),
@@ -136,7 +140,7 @@ class _Login_screenState extends State<Login_screen> {
                     delay: const Duration(milliseconds: 400),
                     child: MaterialButton(
                       onPressed: () {
-                        if (formkey.currentState?.validate() ?? false) {
+                        if (formKey.currentState?.validate() ?? false) {
                           login();
                         }
                       },
@@ -146,16 +150,14 @@ class _Login_screenState extends State<Login_screen> {
                         height: 60,
                         width: mediaQuery.width,
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.white,
-                          ),
-                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          "Login",
+                          "Log In",
                           style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white),
                         ),
                       ),
@@ -194,6 +196,18 @@ class _Login_screenState extends State<Login_screen> {
         email: emailController.text,
         password: passwordController.text,
       );
+      //retrive dataa
+      var userObj = await DataBaseUtiles.getUser(credential.user?.uid ?? '');
+      if (userObj == null) {
+        DialogUtiles.hideLoading(context);
+        DialogUtiles.showMessage(context, message: 'Something went wrong');
+      } else {
+        Provider.of<UserProvider>(context, listen: false).setUser(userObj);
+
+        DialogUtiles.hideLoading(context);
+        Provider.of<UserProvider>(context, listen: false).notifyListeners();
+      }
+      credential.user!.sendEmailVerification();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('isLoggedIn', true);
@@ -225,6 +239,22 @@ class _Login_screenState extends State<Login_screen> {
     } catch (e) {
       DialogUtiles.hideLoading(context);
       print(e.toString());
+    }
+  }
+
+  void sendPasswordResetEmail() async {
+    String email = emailController.text; // Replace with the user's email
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+
+      // Password reset email sent successfully
+      DialogUtiles.showMessage(context,
+          message: "Password reset email sent to $email", title: " ");
+      print("Password reset email sent to $email");
+    } catch (e) {
+      // An error occurred. Handle the error.
+      print("Error sending password reset email: $e");
     }
   }
 }

@@ -37,7 +37,7 @@ class _Custom_Form_FieldState extends State<Custom_Form_Field> {
         keyboardType: widget.keyboardType,
         obscureText: obscureText,
         decoration: InputDecoration(
-          fillColor: Colors.white,
+          fillColor: Color.fromRGBO(190, 190, 190, 0.5),
           filled: true,
           hintText: widget.hint,
           hintStyle: TextStyle(
@@ -52,6 +52,10 @@ class _Custom_Form_FieldState extends State<Custom_Form_Field> {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Colors.black),
           ),
           // Show visibility toggle only for the password field
           suffixIcon: widget.secureText
