@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:final_project/_pages/home_screen.dart';
 import 'package:final_project/_pages/user_provider.dart';
 import 'package:final_project/login&regisrer/register.dart';
@@ -119,6 +120,9 @@ class _LoginScreenState extends State<Login_screen> {
                       secureText: true,
                     ),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   GestureDetector(
                     onTap: () async {
                       sendPasswordResetEmail();
@@ -134,7 +138,7 @@ class _LoginScreenState extends State<Login_screen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   FadeInRight(
                     delay: const Duration(milliseconds: 400),
@@ -212,14 +216,15 @@ class _LoginScreenState extends State<Login_screen> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('isLoggedIn', true);
 
-      DialogUtiles.showMessage(context, message: "Login Successfully");
+      DialogUtiles.showMessage(context,
+          dialogType: DialogType.success, message: "Login Successfully");
       Navigator.pushReplacementNamed(context, Home_Screen.routeName);
     } on FirebaseAuthException catch (e) {
       DialogUtiles.hideLoading(context);
       DialogUtiles.showMessage(
         context,
+        dialogType: DialogType.error,
         message: 'Error in E-mail or password, check them again',
-        title: 'Error',
         posActionName: 'ok',
       );
 
@@ -250,10 +255,15 @@ class _LoginScreenState extends State<Login_screen> {
 
       // Password reset email sent successfully
       DialogUtiles.showMessage(context,
-          message: "Password reset email sent to $email", title: " ");
-      print("Password reset email sent to $email");
+          dialogType: DialogType.success,
+          message: "Password reset email sent to $email");
+      // print("Password reset email sent to $email");
     } catch (e) {
       // An error occurred. Handle the error.
+      DialogUtiles.showMessage(context,
+          dialogType: DialogType.error,
+          message:
+              "Error sending password reset email: The email address is badly formatted.");
       print("Error sending password reset email: $e");
     }
   }

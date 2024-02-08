@@ -2,12 +2,13 @@ import 'package:final_project/_pages/camera.dart';
 import 'package:final_project/_pages/home_screen.dart';
 import 'package:final_project/_pages/home_view.dart';
 import 'package:final_project/_pages/nearest_places(map).dart';
-import 'package:final_project/_pages/password%20recovery%20screen.dart';
 import 'package:final_project/_pages/profile_view.dart';
 import 'package:final_project/_pages/setting_view.dart';
 import 'package:final_project/_pages/user_provider.dart';
 import 'package:final_project/login&regisrer/login.dart';
 import 'package:final_project/login&regisrer/register.dart';
+import 'package:final_project/map/nearest_gasoline.dart';
+import 'package:final_project/map/nearest_hospital.dart';
 import 'package:final_project/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -89,8 +90,8 @@ class MyApp extends StatelessWidget {
             Setting_View.routeName: (context) => Setting_View(),
             MainScreen.routeName: (context) => MainScreen(),
             Nearest_places.routeName: (context) => Nearest_places(),
-            PasswordRecoveryScreen.routeName: (context) =>
-                PasswordRecoveryScreen()
+            NearestHospital.routeName: (context) => NearestHospital(),
+            NearestGasoline.routeName: (context) => NearestGasoline()
           },
         ));
   }

@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:final_project/_pages/user_model.dart';
 import 'package:final_project/login&regisrer/register_data.dart';
 import 'package:final_project/widgets/dialog_utilies.dart';
@@ -278,6 +279,7 @@ class _Register_ScreenState extends State<Register_Screen> {
       // Need to show message
       DialogUtiles.showMessage(
         context,
+        dialogType: DialogType.success,
         message: 'Register Successfully',
         title: 'Success',
         posActionName: 'OK',
@@ -297,6 +299,7 @@ class _Register_ScreenState extends State<Register_Screen> {
         // Need to show message
         DialogUtiles.showMessage(
           context,
+          dialogType: DialogType.error,
           message: 'The password provided is too weak.',
           title: 'Error',
           posActionName: 'OK',
@@ -310,6 +313,7 @@ class _Register_ScreenState extends State<Register_Screen> {
         // Need to show message
         DialogUtiles.showMessage(
           context,
+          dialogType: DialogType.error,
           message: 'The account already exists for that email.',
           title: 'Error',
           posActionName: 'OK',

@@ -1,52 +1,51 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 
 class DialogUtiles {
   static void showLoading(BuildContext context, String message) {
-    showDialog(
-        //barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Row(
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(
-                  width: 12,
-                ),
-                Text(message, style: TextStyle(color: Color(0xFF083663))),
-              ],
-            ),
-          );
-        });
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.noHeader,
+      animType: AnimType.bottomSlide,
+      body: Row(
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(
+            width: 12,
+          ),
+          Text(message, style: TextStyle(color: Color(0xFF083663))),
+        ],
+      ),
+    )..show();
   }
 
   static void hideLoading(BuildContext context) {
-    Navigator.pop(context);
+    AwesomeDialog(context: context).dismiss();
   }
 
-  static void showMessage(BuildContext context, {
+  static void showMessage(
+    BuildContext context, {
     required String message,
     String title = 'Title',
     String? posActionName,
     Function? posAction,
+    DialogType? dialogType,
   }) {
-    List<void> actions = [];
-    if (posActionName != null) {
-      actions.add(TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            posAction?.call();
-          },
-          child: Text('ok', style: TextStyle(color: Color(0xFF083663)))));
+    Color? btnOkColor;
+
+    if (dialogType == DialogType.error) {
+      btnOkColor = Colors.red;
+    } else if (dialogType == DialogType.success) {
+      btnOkColor = Colors.green;
     }
-    showDialog(
+    AwesomeDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(message, style: TextStyle(color: Color(0xFF083663))),
-          title: Text(title, style: TextStyle(color: Color(0xFF083663))),
-        );
-      },
-    );
+      dialogType: dialogType ?? DialogType.success,
+      animType: AnimType.bottomSlide,
+      headerAnimationLoop: false,
+      desc: message,
+      btnOkText: posActionName ?? 'OK',
+      btnOkColor: btnOkColor,
+    )..show();
   }
 }
