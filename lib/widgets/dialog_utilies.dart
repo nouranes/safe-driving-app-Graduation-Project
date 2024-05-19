@@ -28,7 +28,7 @@ class DialogUtiles {
     required String message,
     String title = 'Title',
     String? posActionName,
-    Function? posAction,
+    // Function? posAction,
     DialogType? dialogType,
   }) {
     Color? btnOkColor;

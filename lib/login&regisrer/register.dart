@@ -270,8 +270,8 @@ class _Register_ScreenState extends State<Register_Screen> {
 
       // Create a User object
 
-      print('Full Name: ${fullnameController.text}');
-      print('User Full Name: ${user?.fullName ?? ''}');
+      // print('Full Name: ${fullnameController.text}');
+      // print('User Full Name: ${user?.fullName ?? ''}');
 
       // Need to hide loading
       DialogUtiles.hideLoading(context);
@@ -281,14 +281,14 @@ class _Register_ScreenState extends State<Register_Screen> {
         context,
         dialogType: DialogType.success,
         message: 'Register Successfully',
-        title: 'Success',
-        posActionName: 'OK',
+        // title: 'Success',
+        // posActionName: 'OK',
       );
 
       // Navigate to login screen with user details
 
-      print('register successfully ');
-      print(credential.user?.uid ?? '');
+      // print('register successfully ');
+      // print(credential.user?.uid ?? '');
     } on FirebaseAuthException catch (e) {
       // If an error occurs
 
@@ -305,7 +305,7 @@ class _Register_ScreenState extends State<Register_Screen> {
           posActionName: 'OK',
         );
 
-        print('The password provided is too weak.');
+        // print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         // Need to hide loading
         DialogUtiles.hideLoading(context);
@@ -316,10 +316,10 @@ class _Register_ScreenState extends State<Register_Screen> {
           dialogType: DialogType.error,
           message: 'The account already exists for that email.',
           title: 'Error',
-          posActionName: 'OK',
+          // posActionName: 'OK',
         );
 
-        print('The account already exists for that email.');
+        // print('The account already exists for that email.');
       }
     } catch (e) {
       // Need to hide loading

@@ -2,7 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  // const MainScreen({Key? key}) : super(key: key);
   static const String routeName = 'camera';
 
   @override
@@ -50,6 +50,10 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     if (cameraController.value.isInitialized) {
       return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
         body: Stack(
           children: [
             CameraPreview(cameraController),
@@ -61,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
                 });
               },
               child:
-                  button(Icons.flip_camera_ios_outlined, Alignment.bottomLeft),
+              button(Icons.flip_camera_ios_outlined, Alignment.bottomLeft),
             ),
             GestureDetector(
               onTap: () {
@@ -75,15 +79,15 @@ class _MainScreenState extends State<MainScreen> {
               },
               child: button(Icons.camera_alt_outlined, Alignment.bottomCenter),
             ),
-            Align(
-              alignment: AlignmentDirectional.topCenter,
-              child: Text(
-                "My Camera",
-                style: TextStyle(
-                  fontSize: 30,
-                ),
-              ),
-            ),
+            // Align(
+            //   alignment: AlignmentDirectional.topCenter,
+            //   child: Text(
+            //     "My Camera",
+            //     style: TextStyle(
+            //       fontSize: 30,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       );

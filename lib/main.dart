@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
           // Add other providers if needed
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             iconTheme: IconThemeData(color: Colors.white),
             //-------------------------------------
@@ -49,38 +50,38 @@ class MyApp extends StatelessWidget {
                 selectedItemColor: Colors.white,
                 unselectedItemColor: Colors.white,
                 unselectedIconTheme:
-                    IconThemeData(size: 26, color: Colors.white)),
+                IconThemeData(size: 26, color: Colors.white)),
             //------------------------------------------------
-        textTheme: TextTheme(
-          titleLarge: GoogleFonts.poppins(
-            fontSize: 24,
+            textTheme: TextTheme(
+              titleLarge: GoogleFonts.poppins(
+                fontSize: 24,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
-          titleMedium: GoogleFonts.poppins(
-            fontSize: 20,
+              titleMedium: GoogleFonts.poppins(
+                fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
-          bodyLarge: GoogleFonts.poppins(
-            fontSize: 18,
+              bodyLarge: GoogleFonts.poppins(
+                fontSize: 18,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
               ),
-          bodyMedium: GoogleFonts.poppins(
-            fontSize: 18,
+              bodyMedium: GoogleFonts.poppins(
+                fontSize: 18,
                 fontWeight: FontWeight.w400,
                 color: Colors.black,
               ),
-          bodySmall: GoogleFonts.poppins(
-            fontSize: 18,
+              bodySmall: GoogleFonts.poppins(
+                fontSize: 18,
                 fontWeight: FontWeight.w300,
                 color: Colors.black,
               ),
-        ),
-      ),
-      initialRoute: Splash_Screen.routeName,
-      routes: {
+            ),
+          ),
+          initialRoute: Splash_Screen.routeName,
+          routes: {
             Splash_Screen.routeName: (context) => Splash_Screen(),
             Login_screen.routeName: (context) => Login_screen(),
             Register_Screen.routeName: (context) => Register_Screen(),
@@ -91,7 +92,7 @@ class MyApp extends StatelessWidget {
             MainScreen.routeName: (context) => MainScreen(),
             Nearest_places.routeName: (context) => Nearest_places(),
             NearestHospital.routeName: (context) => NearestHospital(),
-            NearestGasoline.routeName: (context) => NearestGasoline()
+            NearestGasoline.routeName: (context) => NearestGasoline(),
           },
         ));
   }

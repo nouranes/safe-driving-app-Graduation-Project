@@ -34,7 +34,7 @@ class _Custom_Form_FieldState extends State<Custom_Form_Field> {
       padding: EdgeInsets.symmetric(vertical: 5.0),
       child: TextFormField(
         controller: widget.controller,
-        keyboardType: widget.keyboardType,
+        //keyboardType: widget.keyboardType,
         obscureText: obscureText,
         decoration: InputDecoration(
           fillColor: Color.fromRGBO(190, 190, 190, 0.5),

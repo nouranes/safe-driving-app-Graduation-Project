@@ -28,7 +28,7 @@ class _LoginScreenState extends State<Login_screen> {
 
   @override
   void initState() {
-    super.initState();
+    // super.initState();
     checkLoginStatus();
   }
 
@@ -211,7 +211,7 @@ class _LoginScreenState extends State<Login_screen> {
         DialogUtiles.hideLoading(context);
         Provider.of<UserProvider>(context, listen: false).notifyListeners();
       }
-      credential.user!.sendEmailVerification();
+      // credential.user!.sendEmailVerification();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('isLoggedIn', true);
