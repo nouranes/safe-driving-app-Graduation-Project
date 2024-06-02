@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -10,10 +9,10 @@ class Nearest_places extends StatefulWidget {
   static const String routeName = 'places';
 
   @override
-  State<Nearest_places> createState() => _Nearest_placesState();
+  State<Nearest_places> createState() => _NearestPlacesState();
 }
 
-class _Nearest_placesState extends State<Nearest_places> {
+class _NearestPlacesState extends State<Nearest_places> {
   MyLocationManager locationManager = MyLocationManager();
   StreamSubscription<LocationData>? streamSubscription;
   CameraPosition initialCameraPosition = CameraPosition(
@@ -90,10 +89,10 @@ class _Nearest_placesState extends State<Nearest_places> {
 
     var locationData = await locationManager.getUserLocation();
     if (locationData != null) {
-      LatLng currentLocation =
-          LatLng(locationData.latitude!, locationData.longitude!);
-      polylineCoordinates
-          .add(currentLocation); // Adding the initial location to polyline
+      LatLng currentLocation = LatLng(
+          locationData.latitude!, locationData.longitude!);
+      polylineCoordinates.add(
+          currentLocation); // Adding the initial location to polyline
 
       mapController?.animateCamera(CameraUpdate.newLatLng(currentLocation));
 
@@ -109,8 +108,8 @@ class _Nearest_placesState extends State<Nearest_places> {
     }
 
     locationManager.updateUserLocation().listen((newLocation) {
-      LatLng updatedLocation =
-          LatLng(newLocation.latitude!, newLocation.longitude!);
+      LatLng updatedLocation = LatLng(
+          newLocation.latitude!, newLocation.longitude!);
       Marker userMarker = Marker(
         markerId: MarkerId('user'),
         position: updatedLocation,
@@ -121,6 +120,7 @@ class _Nearest_placesState extends State<Nearest_places> {
     });
   }
 }
+
 
 // class MyLocationManager {
 //   Location myLocation = Location();
