@@ -1,9 +1,10 @@
 import 'package:final_project/_pages/camera.dart';
-import 'package:final_project/_pages/nearest_places(map).dart';
 import 'package:final_project/_pages/user_provider.dart';
 import 'package:final_project/widgets/buttom_home_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'mapwNearplaces.dart';
 
 class Home_View extends StatelessWidget {
   static const String routeName = 'home_view';
@@ -66,7 +67,12 @@ class Home_View extends StatelessWidget {
                 task: 'Nearest Places',
                 details: 'Use the map to locate nearest places',
                 onClick: () {
-                  Navigator.pushNamed(context, Nearest_places.routeName);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MapWidget(),
+                    ),
+                  );
                 },
               ),
             ],

@@ -19,34 +19,6 @@ class _Setting_ViewState extends State<Setting_View> {
     Navigator.pushReplacementNamed(context, Login_screen.routeName);
   }
 
-  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  // FlutterLocalNotificationsPlugin();
-  // final List<String> installedApps = [];
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _getInstalledApps();
-  //   _initializeNotifications();
-  // }
-  // Future<void> _initializeNotifications() async {
-  //   const AndroidInitializationSettings initializationSettingsAndroid =
-  //   AndroidInitializationSettings('@mipmap/ic_launcher');
-  //   final InitializationSettings initializationSettings =
-  //   InitializationSettings(android: initializationSettingsAndroid);
-  //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  // }
-  //
-  // Future<void> _getInstalledApps() async {
-  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  //   setState(() {
-  //     installedApps.add(packageInfo.appName);
-  //   });
-  // }
-  // Future<void> _cancelNotifications(String appName) async {
-  //   await flutterLocalNotificationsPlugin.cancel(0, tag: appName);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +35,12 @@ class _Setting_ViewState extends State<Setting_View> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Switch(
+          //   value: BlocProvider.of<AppThemeCubit>(context).state ==
+          //       ThemeState.Dark,
+          //   onChanged: (_) => themeDataa.changeTheme(),
+          // ),
+
           ElevatedButton(
             onPressed: () {
               Navigator.push(
@@ -80,7 +58,7 @@ class _Setting_ViewState extends State<Setting_View> {
             child: ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.red)),
+                  MaterialStateProperty.all<Color>(Colors.red)),
               onPressed: () {
                 logout(context);
               },

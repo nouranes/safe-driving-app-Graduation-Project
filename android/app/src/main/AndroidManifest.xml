@@ -12,7 +12,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- Include only if your app benefits from precise location access. -->
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -23,7 +25,7 @@
         android:label="final_project">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB0FJu75kvRtonN6mLBQlBz8CnP01mbel0" />
+            android:value="AIzaSyAhA-MYR0Xsp63cObefaK9BCXGVX2Q3PRo" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

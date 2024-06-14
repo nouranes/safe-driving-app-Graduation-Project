@@ -1,7 +1,6 @@
 import 'package:final_project/_pages/camera.dart';
 import 'package:final_project/_pages/home_screen.dart';
 import 'package:final_project/_pages/home_view.dart';
-import 'package:final_project/_pages/nearest_places(map).dart';
 import 'package:final_project/_pages/profile_view.dart';
 import 'package:final_project/_pages/setting_view.dart';
 import 'package:final_project/_pages/user_provider.dart';
@@ -90,7 +89,7 @@ class MyApp extends StatelessWidget {
             Profile_View.routeName: (context) => Profile_View(),
             Setting_View.routeName: (context) => Setting_View(),
             MainScreen.routeName: (context) => MainScreen(),
-            Nearest_places.routeName: (context) => Nearest_places(),
+            // NearByPlacesScreen.routeName: (context) => NearByPlacesScreen(),
             NearestHospital.routeName: (context) => NearestHospital(),
             NearestGasoline.routeName: (context) => NearestGasoline(),
           },

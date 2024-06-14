@@ -54,8 +54,13 @@ dependencies:
   flutter_local_notifications: ^17.1.0
   package_info_plus: ^5.0.1
   device_apps: ^2.2.0
+  #  google_places_flutter: ^2.0.8
 
   flutter_overlay: ^1.0.0
+  #  http: ^1.2.0
+  geolocator: ^11.1.0
+  geocoding: ^3.0.0
+  flutter_polyline_points: ^2.0.0
 
 dev_dependencies:
   animate_do: ^3.1.2
