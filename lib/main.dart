@@ -1,4 +1,7 @@
+import 'package:camera/camera.dart';
 import 'package:final_project/_pages/camera.dart';
+import 'package:final_project/_pages/dashboard.dart';
+import 'package:final_project/_pages/history.dart';
 import 'package:final_project/_pages/home_screen.dart';
 import 'package:final_project/_pages/home_view.dart';
 import 'package:final_project/_pages/profile_view.dart';
@@ -6,8 +9,6 @@ import 'package:final_project/_pages/setting_view.dart';
 import 'package:final_project/_pages/user_provider.dart';
 import 'package:final_project/login&regisrer/login.dart';
 import 'package:final_project/login&regisrer/register.dart';
-import 'package:final_project/map/nearest_gasoline.dart';
-import 'package:final_project/map/nearest_hospital.dart';
 import 'package:final_project/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -17,17 +18,32 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  // Initialize Firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(ChangeNotifierProvider(
-      create: (context) => UserProvider(), child: const MyApp()));
+  // Initialize cameras
+  final cameras = await availableCameras();
+  final firstCamera = cameras.firstWhere(
+    (camera) => camera.lensDirection == CameraLensDirection.front,
+  );
+
+  // Run the app with necessary providers and camera configuration
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      // Replace UserProvider with your actual provider class
+      child: MyApp(camera: firstCamera),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final CameraDescription camera;
+
+  MyApp({required this.camera});
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +57,15 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             iconTheme: IconThemeData(color: Colors.white),
             //-------------------------------------
-            bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                selectedIconTheme: IconThemeData(
-                  size: 32,
-                  color: Colors.white,
-                ),
-                selectedItemColor: Colors.white,
-                unselectedItemColor: Colors.white,
-                unselectedIconTheme:
-                IconThemeData(size: 26, color: Colors.white)),
+            // bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            //     selectedIconTheme: IconThemeData(
+            //       size: 32,
+            //       color: Colors.black,
+            //     ),
+            //     selectedItemColor: Colors.white,
+            //     unselectedItemColor: Colors.black,
+            //     unselectedIconTheme:
+            //     IconThemeData(size: 26, color: Colors.black)),
             //------------------------------------------------
             textTheme: TextTheme(
               titleLarge: GoogleFonts.poppins(
@@ -88,10 +104,10 @@ class MyApp extends StatelessWidget {
             Home_View.routeName: (context) => Home_View(),
             Profile_View.routeName: (context) => Profile_View(),
             Setting_View.routeName: (context) => Setting_View(),
-            MainScreen.routeName: (context) => MainScreen(),
-            // NearByPlacesScreen.routeName: (context) => NearByPlacesScreen(),
-            NearestHospital.routeName: (context) => NearestHospital(),
-            NearestGasoline.routeName: (context) => NearestGasoline(),
+            RealTimeDetection.routeName: (context) =>
+                RealTimeDetection(camera: camera),
+            DashboardScreen.routeName: (context) => DashboardScreen(),
+            HistoryScreen.routeName: (context) => HistoryScreen(),
           },
         ));
   }

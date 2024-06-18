@@ -59,7 +59,7 @@ class Home_View extends StatelessWidget {
                 task: 'Start Journey ?',
                 details: 'Click to use a camera feature',
                 onClick: () {
-                  Navigator.pushNamed(context, MainScreen.routeName);
+                  Navigator.pushNamed(context, RealTimeDetection.routeName);
                 },
               ),
               Buttons_Home_Widget(
