@@ -7,12 +7,17 @@ import 'package:final_project/_pages/home_view.dart';
 import 'package:final_project/_pages/profile_view.dart';
 import 'package:final_project/_pages/setting_view.dart';
 import 'package:final_project/_pages/user_provider.dart';
+import 'package:final_project/cubits/app_theme_state.dart';
+import 'package:final_project/enums/themestate.dart';
+import 'package:final_project/locale/locale.dart';
 import 'package:final_project/login&regisrer/login.dart';
 import 'package:final_project/login&regisrer/register.dart';
 import 'package:final_project/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:final_project/cubits/app_theme_cubit.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -47,68 +52,42 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => UserProvider()),
-          // Add other providers if needed
-        ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            iconTheme: IconThemeData(color: Colors.white),
-            //-------------------------------------
-            // bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            //     selectedIconTheme: IconThemeData(
-            //       size: 32,
-            //       color: Colors.black,
-            //     ),
-            //     selectedItemColor: Colors.white,
-            //     unselectedItemColor: Colors.black,
-            //     unselectedIconTheme:
-            //     IconThemeData(size: 26, color: Colors.black)),
-            //------------------------------------------------
-            textTheme: TextTheme(
-              titleLarge: GoogleFonts.poppins(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-              titleMedium: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-              bodyLarge: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-              ),
-              bodyMedium: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
-              ),
-              bodySmall: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w300,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          initialRoute: Splash_Screen.routeName,
-          routes: {
-            Splash_Screen.routeName: (context) => Splash_Screen(),
-            Login_screen.routeName: (context) => Login_screen(),
-            Register_Screen.routeName: (context) => Register_Screen(),
-            Home_Screen.routeName: (context) => Home_Screen(),
-            Home_View.routeName: (context) => Home_View(),
-            Profile_View.routeName: (context) => Profile_View(),
-            Setting_View.routeName: (context) => Setting_View(),
-            RealTimeDetection.routeName: (context) =>
-                RealTimeDetection(camera: camera),
-            DashboardScreen.routeName: (context) => DashboardScreen(),
-            HistoryScreen.routeName: (context) => HistoryScreen(),
-          },
-        ));
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AppThemeCubit(),
+        ),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: BlocBuilder<AppThemeCubit, AppThemeState>(
+        builder: (context, state) {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: _buildThemeData(state),
+            translations: MyLocale(), // Add this line
+            locale: const Locale('en'), // Default locale
+            fallbackLocale: Locale('en'),
+            // state is AppLightTheme ? ThemeData.light() : ThemeData.dark(),
+            routes: {
+              Splash_Screen.routeName: (context) => Splash_Screen(),
+              Login_screen.routeName: (context) => Login_screen(),
+              Register_Screen.routeName: (context) => Register_Screen(),
+              Home_Screen.routeName: (context) => Home_Screen(),
+              Home_View.routeName: (context) => Home_View(),
+              Profile_View.routeName: (context) => Profile_View(),
+              Setting_View.routeName: (context) => Setting_View(),
+              RealTimeDetection.routeName: (context) => RealTimeDetection(camera: camera),
+              ShowResult.routeName: (context) => ShowResult(),
+              HistoryScreen.routeName: (context) => HistoryScreen(),
+            },
+            initialRoute: Splash_Screen.routeName,
+          );
+        },
+      ),
+    );
+  }
+
+  ThemeData _buildThemeData(AppThemeState state) {
+    return state is AppLightTheme ? ThemeData.light() : ThemeData.dark();
   }
 }

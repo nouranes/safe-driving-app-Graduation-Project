@@ -1,11 +1,12 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:final_project/_pages/user_model.dart';
-import 'package:final_project/_pages/user_provider.dart';
-import 'package:final_project/login&regisrer/register_data.dart';
-import 'package:final_project/widgets/dialog_utilies.dart';
-import 'package:final_project/widgets/text_filed.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:final_project/_pages/user_provider.dart';
+import 'package:final_project/widgets/text_filed.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:final_project/widgets/dialog_utilies.dart';
+import 'package:final_project/login&regisrer/register_data.dart';
 
 class Profile_View extends StatefulWidget {
   static const String routeName = 'profile';
@@ -19,11 +20,10 @@ class _Profile_ViewState extends State<Profile_View> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _numberController = TextEditingController();
 
-  //TextEditingController _passwordController = TextEditingController();
-  //TextEditingController _confirmpasswordController = TextEditingController();
-
   bool isEditing = false;
+  double? userRating;
 
+  @override
   void initState() {
     super.initState();
 
@@ -32,8 +32,21 @@ class _Profile_ViewState extends State<Profile_View> {
     // Check if user is not null
     if (user != null) {
       // Fetch user data from Firestore and update the UI
-      DataBaseUtiles.getUser(user.id).then((MyUser? updatedUser) {
+      DataBaseUtiles.getUser(user.id).then((MyUser? updatedUser) async {
         if (updatedUser != null) {
+          // Calculate rating if the user's email contains "@uber"
+          if (updatedUser.email.contains('@uber')) {
+            double averagePercentage = (updatedUser.drowsyPercentage +
+                    updatedUser.noSeatBeltPercentage +
+                    updatedUser.distractedPercentage) /
+                3;
+            updatedUser.rating = _calculateRating(averagePercentage);
+            userRating = updatedUser.rating;
+
+            // Update the rating in Firebase
+            await Provider.of<UserProvider>(context, listen: false).clickOnSaveChanges(updatedUser);
+          }
+
           setState(() {
             _nameController.text = updatedUser.fullName ?? '';
             _numberController.text = updatedUser.number ?? '';
@@ -47,19 +60,22 @@ class _Profile_ViewState extends State<Profile_View> {
     }
   }
 
-  // void handleSaveButton() async {
-  //   if (isEditing) {
-  //     // Perform the update in Firebase Firestore
-  //     await updateUserInFirestore(_emailController);
-  //     // Set isEditing to false after saving changes
-  //     setState(() {
-  //       isEditing = false;
-  //     });
-  //   }
-  // }
+  double _calculateRating(double averagePercentage) {
+    if (averagePercentage >= 90) return 5.0;
+    if (averagePercentage >= 75) return 4.0;
+    if (averagePercentage >= 50) return 3.0;
+    if (averagePercentage >= 25) return 2.0;
+    return 1.0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDarkMode ? Colors.white : Colors.black;
+    final subTextColor = isDarkMode ? Colors.white70 : Colors.black45;
+
     var mediaQuery = MediaQuery.of(context).size;
+
     // Use Consumer to rebuild the widget when user data changes
     return Consumer<UserProvider>(
       builder: (context, userProvider, _) {
@@ -68,11 +84,6 @@ class _Profile_ViewState extends State<Profile_View> {
         print('User in Profile_View: $user');
 
         return Scaffold(
-          backgroundColor: Colors.white,
-
-          // appBar: AppBar(
-          //   title: Text('Profile'),
-          // ),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -103,174 +114,115 @@ class _Profile_ViewState extends State<Profile_View> {
                               onTap: () {
                                 _showBottomSheet();
                               },
-                              //       },
                               child: CircleAvatar(
                                 radius: 75,
-
-                                //         backgroundImage: AssetImage('assets/images/photo_splash.jpg'),
-                                //         radius: 70,
                                 child: Icon(Icons.camera_alt, size: 30),
                               ),
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
-                //   Stack(
-                //   children: [
-                //   Container(
-                //   height: 150,
-                //     width: double.infinity,
-                //     color: Colors.blue,
-                //     child: Image.asset(
-                //       "assets/images/profile_container_backg.jpg",
-                //       fit: BoxFit.cover,
-                //     ),
-                //   ),
-                //
-                //   Positioned(
-                //     bottom: 20, // Adjust the position as needed
-                //     left: MediaQuery.of(context).size.width / 4,
-                //     child: InkWell(
-                //       onTap: () {
-                //         // Open Bottom Sheet or perform camera-related action
-                //         _showBottomSheet();
-                //       },
-                //       child: CircleAvatar(
-                //         backgroundColor: Colors.transparent,
-                //         backgroundImage: AssetImage('assets/images/photo_splash.jpg'),
-                //         radius: 70,
-                //         child: Icon(Icons.camera_alt, size: 30),
-                //       ),
-                //     ),),
-                //   ),
-                //   ],
-                // ),
-
+                if (userRating != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: 13.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        userRating!.toInt(),
+                        (index) => Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  ),
                 SizedBox(height: 20),
                 Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: Text(
                     'Welcome, ${user?.fullName ?? ''}',
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: Text(
-                    ' ${user?.email ?? ''}',
-                    style: TextStyle(color: Colors.black45, fontSize: 14),
-                  ),
-                ),
-                //____________________________________________________
-
-                SizedBox(height: 20),
-
-                //____________________________________________________
-                Container(
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  child: Text(
-                    'User Name',
+                    '${user?.email ?? ''}',
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                      color: subTextColor,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-
-                //_____________________________________--
+                SizedBox(height: 20),
+                Container(
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: Text(
+                    "10".tr,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 SizedBox(height: 5),
-                //________________________________________
                 Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: Text_filed(
                     data: _nameController,
+                    textColor: textColor,
                   ),
                 ),
-
-                //--____________________________________________
-                //_____________________________________--
                 SizedBox(height: 25),
-                //________________________________________
                 Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: Text(
-                    'Mobile Number',
+                    "11".tr,
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                      color: textColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-
-                //_____________________________________________
-
                 SizedBox(height: 5),
-                //________________________________________
                 Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: Text_filed(
                     data: _numberController,
+                    textColor: textColor,
                   ),
                 ),
-
-                //__________________________________-
-
                 SizedBox(height: 25),
-                //________________________________________
-
                 Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: Text(
-                    'E-mail',
+                    "12".tr,
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                      color: textColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-
-                //________________________________________
-                //_____________________________________--
                 SizedBox(height: 5),
-                //________________________________________
-
                 Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: Text_filed(
                     data: _emailController,
+                    textColor: textColor,
                   ),
                 ),
-                //______________________________________________
-                // Text(
-                //   'Password',
-                //   style: TextStyle(color: Colors.black, fontSize: 18),
-                // ),
-                //__________________________________________________
-
-                // Text_filed(
-                //   data: _passwordController,
-                // ),
-                // //_________________________________________________
-                // Text(
-                //   'Confirm Password',
-                //   style: TextStyle(color: Colors.black, fontSize: 18),
-                // ),
-                //__________________________________________________
-
-                // Text_filed(
-                //   data: _confirmpasswordController,
-                // ),
-                //_________________________________________________
-                // Save button
-                //_____________________________________--
                 SizedBox(height: 22),
-                //________________________________________
                 Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: InkWell(
@@ -278,17 +230,42 @@ class _Profile_ViewState extends State<Profile_View> {
                       // Create an updated user object
                       MyUser updatedUser = MyUser(
                         id: user!.id,
-                        fullName: _nameController.text,
-                        email: _emailController.text,
-                        number: _numberController.text,
+                        fullName: _nameController.text.isEmpty
+                            ? user.fullName
+                            : _nameController.text,
+                        email: _emailController.text.isEmpty
+                            ? user.email
+                            : _emailController.text,
+                        number: _numberController.text.isEmpty
+                            ? user.number
+                            : _numberController.text,
+                        journeyHistory: user.journeyHistory,
+                        drowsyPercentage: user.drowsyPercentage,
+                        noSeatBeltPercentage: user.noSeatBeltPercentage,
+                        distractedPercentage: user.distractedPercentage,
                       );
+
+                      // Calculate rating if the user's email contains "@uber"
+                      if (updatedUser.email.contains('@uber')) {
+                        double averagePercentage = (updatedUser.drowsyPercentage +
+                                updatedUser.noSeatBeltPercentage +
+                                updatedUser.distractedPercentage) /
+                            3;
+                        updatedUser.rating =
+                            _calculateRating(averagePercentage);
+                        setState(() {
+                          userRating = updatedUser.rating;
+                        });
+
+                        // Update the rating in Firebase
+                        await userProvider.clickOnSaveChanges(updatedUser);
+                      }
 
                       // Call clickOnSaveChanges to save changes
                       await userProvider.clickOnSaveChanges(updatedUser);
 
                       DialogUtiles.showMessage(context,
-                          message: 'Your changes have been successfully saved',
-                          dialogType: DialogType.success);
+                          message: "13".tr, dialogType: DialogType.success);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -299,42 +276,16 @@ class _Profile_ViewState extends State<Profile_View> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        "Save Changes",
+                        "14".tr,
                         style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
                       ),
                     ),
                   ),
                 ),
-                // Container(
-                //   height: 60,
-                //   padding: EdgeInsets.only(left: 16,right: 16),
-                //   child: ElevatedButton(
-                //     style: ButtonStyle(
-                //
-                //
-                //         backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(190, 190, 190,1))),
-                //     onPressed: () async {
-                //       // Create an updated user object
-                //       MyUser updatedUser = MyUser(
-                //         id: user!.id,
-                //         fullName: _nameController.text,
-                //         email: _emailController.text,
-                //         number: _numberController.text,
-                //       );
-                //
-                //       // Call clickOnSaveChanges to save changes
-                //       await userProvider.clickOnSaveChanges(updatedUser);
-                //
-                //       DialogUtiles.showMessage(context,
-                //           message: 'Your changes have been successfully saved',
-                //           dialogType: DialogType.success);
-                //
-                //     },
-                //     child: Text('Save Changes',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18)),),
-                // )
               ],
             ),
           ),
@@ -353,7 +304,7 @@ class _Profile_ViewState extends State<Profile_View> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Choose  Profile Photo '),
+                Text("15".tr),
               ],
             ),
           );
