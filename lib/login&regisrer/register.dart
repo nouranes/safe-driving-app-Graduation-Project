@@ -265,7 +265,10 @@ class _Register_ScreenState extends State<Register_Screen> {
           id: credential.user?.uid ?? '',
           fullName: fullname,
           email: emailController.text,
-          number: number);
+          number: number,
+            journeyHistory: [],
+
+          );
       DataBaseUtiles.registerUser(user);
 
       // Create a User object

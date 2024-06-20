@@ -46,7 +46,7 @@ class _HomeScreenState extends State<Home_Screen> {
     ];
 
     if (showFullNavBar) {
-      pages.add(DashboardScreen());
+      pages.add(ShowResult());
     }
 
     pages.addAll([
