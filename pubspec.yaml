@@ -37,9 +37,10 @@ dependencies:
   get: ^4.6.6
   audioplayers: ^5.2.1
   pie_chart: ^5.4.0
-  image_picker: ^1.1.2
+  image_picker: 1.0.8
   firebase_storage: ^11.6.9
   flutter_rating_bar: ^4.0.1
+  video_player: ^2.8.7
 
 dev_dependencies:
   animate_do: ^3.1.2
@@ -53,6 +54,10 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/سبلاش.mp4
+    - assets/images/accident-car.png
+    - assets/images/history.jpg
+    - assets/images/nearest places.jpg
     - assets/images/photo_splash.jpg
     - assets/images/location_icon.png
     - assets/images/default_profile.png

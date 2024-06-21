@@ -1,12 +1,12 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:final_project/_pages/user_model.dart';
+import 'package:final_project/_pages/user_provider.dart';
+import 'package:final_project/login&regisrer/register_data.dart';
+import 'package:final_project/widgets/dialog_utilies.dart';
+import 'package:final_project/widgets/text_filed.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:final_project/_pages/user_provider.dart';
-import 'package:final_project/widgets/text_filed.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:final_project/widgets/dialog_utilies.dart';
-import 'package:final_project/login&regisrer/register_data.dart';
 
 class Profile_View extends StatefulWidget {
   static const String routeName = 'profile';
@@ -44,14 +44,18 @@ class _Profile_ViewState extends State<Profile_View> {
             userRating = updatedUser.rating;
 
             // Update the rating in Firebase
-            await Provider.of<UserProvider>(context, listen: false).clickOnSaveChanges(updatedUser);
+            await Provider.of<UserProvider>(context, listen: false)
+                .clickOnSaveChanges(updatedUser);
           }
 
-          setState(() {
-            _nameController.text = updatedUser.fullName ?? '';
-            _numberController.text = updatedUser.number ?? '';
-            _emailController.text = updatedUser.email ?? '';
-          });
+          // Ensure the widget is still mounted before calling setState
+          if (mounted) {
+            setState(() {
+              _nameController.text = updatedUser.fullName ?? '';
+              _numberController.text = updatedUser.number ?? '';
+              _emailController.text = updatedUser.email ?? '';
+            });
+          }
         }
       }).catchError((error) {
         // Handle error as needed
@@ -132,7 +136,7 @@ class _Profile_ViewState extends State<Profile_View> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
                         userRating!.toInt(),
-                        (index) => Icon(
+                            (index) => Icon(
                           Icons.star,
                           color: Colors.amber,
                           size: 30,
@@ -247,15 +251,18 @@ class _Profile_ViewState extends State<Profile_View> {
 
                       // Calculate rating if the user's email contains "@uber"
                       if (updatedUser.email.contains('@uber')) {
-                        double averagePercentage = (updatedUser.drowsyPercentage +
-                                updatedUser.noSeatBeltPercentage +
-                                updatedUser.distractedPercentage) /
-                            3;
+                        double averagePercentage =
+                            (updatedUser.drowsyPercentage +
+                                    updatedUser.noSeatBeltPercentage +
+                                    updatedUser.distractedPercentage) /
+                                3;
                         updatedUser.rating =
                             _calculateRating(averagePercentage);
-                        setState(() {
-                          userRating = updatedUser.rating;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            userRating = updatedUser.rating;
+                          });
+                        }
 
                         // Update the rating in Firebase
                         await userProvider.clickOnSaveChanges(updatedUser);
@@ -264,8 +271,10 @@ class _Profile_ViewState extends State<Profile_View> {
                       // Call clickOnSaveChanges to save changes
                       await userProvider.clickOnSaveChanges(updatedUser);
 
-                      DialogUtiles.showMessage(context,
-                          message: "13".tr, dialogType: DialogType.success);
+                      if (mounted) {
+                        DialogUtiles.showMessage(context,
+                            message: "13".tr, dialogType: DialogType.success);
+                      }
                     },
                     child: Container(
                       alignment: Alignment.center,

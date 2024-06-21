@@ -267,14 +267,10 @@ class _MapWidgetState extends State<MapWidget> {
                     ' km away',
               ),
               onTap: () async {
-                _drawPolyline(position);
                 List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
                 if (placemarks.isNotEmpty) {
                   Placemark place = placemarks[0];
                   String address = "${place.name}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
-                  setState(() {
-                    destinationController.text = address;
-                  });
                 }
               },
             ),

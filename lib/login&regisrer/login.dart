@@ -192,7 +192,11 @@ class _LoginScreenState extends State<Login_screen> {
     );
   }
 
-  login() async {
+  void login() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
     DialogUtiles.showLoading(context, 'Loading...');
 
     try {
@@ -200,50 +204,65 @@ class _LoginScreenState extends State<Login_screen> {
         email: emailController.text,
         password: passwordController.text,
       );
-      //retrive dataa
+
+      // Retrieve user data from the database
       var userObj = await DataBaseUtiles.getUser(credential.user?.uid ?? '');
       if (userObj == null) {
         DialogUtiles.hideLoading(context);
-        DialogUtiles.showMessage(context, message: 'Something went wrong');
-      } else {
-        Provider.of<UserProvider>(context, listen: false).setUser(userObj);
-
-        DialogUtiles.hideLoading(context);
-        Provider.of<UserProvider>(context, listen: false).notifyListeners();
+        DialogUtiles.showMessage(
+          context,
+          dialogType: DialogType.error,
+          message: 'Something went wrong',
+          posActionName: 'ok',
+        );
+        return;
       }
-      // credential.user!.sendEmailVerification();
 
+      // Set user data in provider
+      Provider.of<UserProvider>(context, listen: false).setUser(userObj);
+      Provider.of<UserProvider>(context, listen: false).notifyListeners();
+
+      // Save login status in shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('isLoggedIn', true);
 
+      // Show success message and navigate to home screen
+      DialogUtiles.hideLoading(context);
       DialogUtiles.showMessage(context,
           dialogType: DialogType.success, message: "Login Successfully");
       Navigator.pushReplacementNamed(context, Home_Screen.routeName);
     } on FirebaseAuthException catch (e) {
       DialogUtiles.hideLoading(context);
-      DialogUtiles.showMessage(
-        context,
-        dialogType: DialogType.error,
-        message: 'Error in E-mail or password, check them again',
-        posActionName: 'ok',
-      );
-
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        DialogUtiles.showMessage(
+          context,
+          dialogType: DialogType.error,
+          message: 'No user found for that email.',
+          posActionName: 'ok',
+        );
       } else if (e.code == 'wrong-password') {
         DialogUtiles.showMessage(
           context,
+          dialogType: DialogType.error,
           message: 'Wrong password provided for that user.',
-          title: 'Error',
           posActionName: 'ok',
         );
-        print('Wrong password provided for that user.');
       } else {
-        print(e.toString());
+        DialogUtiles.showMessage(
+          context,
+          dialogType: DialogType.error,
+          message: 'Error in E-mail or password, check them again',
+          posActionName: 'ok',
+        );
       }
     } catch (e) {
       DialogUtiles.hideLoading(context);
-      print(e.toString());
+      DialogUtiles.showMessage(
+        context,
+        dialogType: DialogType.error,
+        message: 'An unexpected error occurred. Please try again later.',
+        posActionName: 'ok',
+      );
     }
   }
 
